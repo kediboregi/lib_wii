@@ -1,0 +1,11 @@
+COMPILING
+
+	Linux:
+		Open a shell and type:
+			mkdir build
+			cd build
+			cmake ..
+			make
+		
+		Now, to install the libraries, become root, and type:
+			make install

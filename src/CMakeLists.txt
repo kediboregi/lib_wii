@@ -1,0 +1,10 @@
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(WII_SOURCES wii.cpp)
+
+ADD_LIBRARY(wii SHARED ${WII_SOURCES})
+TARGET_LINK_LIBRARIES(wii bluetooth m pthread)
+
+INSTALL(TARGETS wii DESTINATION /usr/local/lib)
+INSTALL(FILES wii.h DESTINATION /usr/local/include/wii/)
+INSTALL(FILES wiic_macros.h DESTINATION /usr/local/include/wii)
