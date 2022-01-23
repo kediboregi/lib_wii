@@ -86,6 +86,26 @@ typedef struct wiimote_state_t {
 
 class Wii {
 public:
+    enum ButtonDefs {
+		BUTTON_TWO = 0x0001,
+		BUTTON_ONE = 0x0002,
+		BUTTON_B = 0x0004,
+		BUTTON_A = 0x0008,
+		BUTTON_MINUS = 0x0010,
+		BUTTON_ZACCEL_BIT6 = 0x0020,
+		BUTTON_ZACCEL_BIT7 = 0x0040,
+		BUTTON_HOME = 0x0080,
+		BUTTON_LEFT = 0x0100,
+		BUTTON_RIGHT = 0x0200,
+		BUTTON_DOWN = 0x0400,
+		BUTTON_UP = 0x0800,
+		BUTTON_PLUS = 0x1000,
+		BUTTON_ZACCEL_BIT4 = 0x2000,
+		BUTTON_ZACCEL_BIT5 = 0x4000,
+		BUTTON_UNKNOWN = 0x8000,
+		BUTTON_ALL = 0x1F9F
+	};
+
 	enum EventTypes {
 		NONE = 0,
 		EVENT,
@@ -130,6 +150,7 @@ public:
 	float GetBatteryLevel();
 	int GetHandshakeState();
 
+	bool RumbleEnabled();
 	void Rumble(int status);
 	void ToggleRumble();
 
@@ -150,6 +171,10 @@ public:
 	int isJustPressed(int Button) {
 		return ((Cast(&btns) & Button) == Button) && ((Cast(&btns_held) & Button) != Button);
 	}
+
+	unsigned short btns;				/**< what buttons have just been pressed	*/
+	unsigned short btns_held;		/**< what buttons are being held down		*/
+	unsigned short btns_released;	/**< what buttons were just released this	*/
 private:
 	bdaddr_t bdaddr;				/**< bt address								*/
 	int out_sock;				/**< output socket							*/
@@ -177,9 +202,6 @@ private:
 
 	// struct ir_t ir;					/**< IR data								*/
 
-	unsigned short btns;				/**< what buttons have just been pressed	*/
-	unsigned short btns_held;		/**< what buttons are being held down		*/
-	unsigned short btns_released;	/**< what buttons were just released this	*/
 
 	EventTypes event;			/**< type of event that occured				*/
 	uint8_t event_buf[MAX_PAYLOAD];		/**< event buffer							*/

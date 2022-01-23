@@ -11,14 +11,29 @@ using namespace std;
 void HandleEvent(Wii &wm) {
     char prefixString[64];
 
-    if(wm.isJustPressed(WIIMOTE_BUTTON_TWO)) {
-        wm.Status();
-        cout << "battery:" << wm.GetBatteryLevel() << endl;
+    if(wm.isPressed(WIIMOTE_BUTTON_ONE)) {
+        cout << "isPressed: one" << endl;
+    }
+    if(wm.isJustPressed(WIIMOTE_BUTTON_ONE)) {
+        cout << "isJustPressed: one" << endl;
+    }
+    if(wm.isHeld(WIIMOTE_BUTTON_ONE)) {
+        cout << "isHeld: one" << endl;
+    }
+    if(wm.isReleased(WIIMOTE_BUTTON_ONE)) {
+        cout << "isReleased: one" << endl;
     }
 
-    if(wm.isHeld(WIIMOTE_BUTTON_ONE)) {
+    //cout << "btns " << wm.btns << " " << wm.btns_held << " " << wm.btns_released << endl;
+
+    /*if(wm.isJustPressed(WIIMOTE_BUTTON_TWO)) {
+        wm.Status();
         cout << "battery:" << wm.GetBatteryLevel() << endl;
-    }
+    }*/
+
+    /*if(wm.isHeld(WIIMOTE_BUTTON_ONE)) {
+        cout << "battery:" << wm.GetBatteryLevel() << endl;
+    }*/
 
     if(wm.isJustPressed(WIIMOTE_BUTTON_LEFT)) {
         wm.Set_Leds(WIIMOTE_LED_1);

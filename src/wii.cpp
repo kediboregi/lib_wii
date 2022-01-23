@@ -72,9 +72,9 @@ int Wii::Connect(string address) {
 	WIIMOTE_ENABLE_STATE(state, WIIMOTE_STATE_CONNECTED);
 	WIIMOTE_ENABLE_STATE(state, WIIMOTE_STATE_HANDSHAKE);
 
-	//Set_Leds(WIIMOTE_LED_NONE);
-	//usleep(50000);
-	//Set_Leds(WIIMOTE_LED_NONE);
+	Set_Leds(WIIMOTE_LED_NONE);
+	usleep(5000);
+	Set_Leds(WIIMOTE_LED_NONE);
 
 	Status();
 
@@ -133,10 +133,10 @@ int Wii::Send(uint8_t report_type, uint8_t* msg, int len) {
 	//#ifdef WITH_WIIC_DEBUG
 	{
 		int x = 2;
-		printf("[DEBUG] (id none) SEND: (%x) %.2x ", buf[0], buf[1]);
+		/*printf("[DEBUG] (id none) SEND: (%x) %.2x ", buf[0], buf[1]);
 		for (; x < len+2; ++x)
 			printf("%.2x ", buf[x]);
-		printf("\n");
+		printf("\n");*/
 	}
 	//#endif
 
@@ -229,6 +229,7 @@ void Wii::Propagate_Event(uint8_t _event, uint8_t* msg) {
 		{
 			// button
 			pressed_buttons(msg);
+			event = EventTypes::EVENT;
 			break;
 		}
 		case WM_RPT_CTRL_STATUS:
@@ -246,16 +247,16 @@ void Wii::Propagate_Event(uint8_t _event, uint8_t* msg) {
 		}
 		default:
 		{
+			cout << "default event" << _event << endl;
 			return;
 		}
 	}
 
-	if (btns)
-		event = EventTypes::EVENT;
+	//if (btns || btns != lstate.btns)
 	//if (btns_held == btns)
 	//	event = EventTypes::EVENT;
 
-	fprintf(stderr, "[DEBUG] events %x %i %x %x %x %x \n", _event, event, msg, lstate.btns, btns, btns_held);
+	//fprintf(stderr, "[DEBUG] events %x %i %x %x %x %x \n", _event, event, msg, lstate.btns, btns, btns_held);
 }
 
 void Wii::pressed_buttons(uint8_t* msg) {
@@ -270,13 +271,15 @@ void Wii::pressed_buttons(uint8_t* msg) {
 	 * it's impossible to state if a button is held, since no other 
 	 * report will be sent.
 	 */
-	btns_held = (now & btns);
+	//btns_held = (now & btns);
 	
+	btns_held = (now & btns);
+
 	/* were pressed or were held & not pressed now, then released */
 	btns_released = ((btns | btns_held) & ~now);
 
 	/* buttons pressed now */
-	btns = now;
+	btns = (now);
 }
 
 void Wii::event_status(uint8_t* msg) {
@@ -287,7 +290,7 @@ void Wii::event_status(uint8_t* msg) {
 
 	event = EventTypes::STATUS;
 
-	pressed_buttons(msg);
+	//pressed_buttons(msg);
 
 	/* find what LEDs are lit */
 	if (msg[2] & WM_CTRL_STATUS_BYTE1_LED_1)	led[0] = 1;
@@ -366,6 +369,12 @@ float Wii::GetBatteryLevel() {
 
 int Wii::GetHandshakeState() {
     return handshake_state;
+}
+
+bool Wii::RumbleEnabled() {
+	if (WIIMOTE_IS_STATE_SET(state, WIIMOTE_STATE_RUMBLE)) 
+		return true;
+	return false;
 }
 
 void Wii::Rumble(int status) {
