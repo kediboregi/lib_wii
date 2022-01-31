@@ -17,15 +17,13 @@ Wii::~Wii() {
 }
 
 int Wii::Connect(string address) {
-    struct sockaddr_l2 addr;
-	memset(&addr, 0, sizeof(addr));
-
 	if (Connected())
 		return 0;
 
+    struct sockaddr_l2 addr;
+	memset(&addr, 0, sizeof(addr));
+
 	addr.l2_family = AF_BLUETOOTH;
-
-
 
 	if (address.length()) {
 		//int n = address.length();
